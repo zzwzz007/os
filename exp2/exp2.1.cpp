@@ -45,6 +45,7 @@ int main()
     pthread_join(t2, NULL);
     pthread_join(t3, NULL);
 
+    semctl(semid, 0, IPC_RMID);
     pthread_exit(NULL);
 }
 
