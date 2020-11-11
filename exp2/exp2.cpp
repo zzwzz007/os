@@ -36,9 +36,10 @@ int main()
 
     arg0.val = 1;
     semctl(semid, 0, SETVAL, arg0);
-    pthread_create(&t1, NULL, subp, NULL);
-    pthread_create(&t2, NULL, subp, NULL);
-    pthread_create(&t3, NULL, subp, NULL);
+    int num1 = 1, num2 = 2, num3 = 3;
+    pthread_create(&t1, NULL, subp, &num1);
+    pthread_create(&t2, NULL, subp, &num2);
+    pthread_create(&t3, NULL, subp, &num3);
 
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);
@@ -47,10 +48,10 @@ int main()
     pthread_exit(NULL);
 }
 
-void *subp(void *)
+void *subp(void *n)
 {
     int sell = 0;
-    int pid = gettid();
+    int id = *(int *)n;
     srand((unsigned)time(NULL));
     while (1)
     {
@@ -59,7 +60,7 @@ void *subp(void *)
         if (ticket < ALL_TICKET)
         {
             ticket++;
-            cout << "pid" << pid << " sell num " << ticket << endl;
+            cout << "id " << id << " sell ticket " << ticket << endl;
             V(semid, 0);
             sell++;
         }
@@ -69,7 +70,7 @@ void *subp(void *)
             break;
         }
     }
-    cout << "pid" << pid << " totally sell " << sell << endl;
+    cout << "id " << id << " totally sell " << sell << endl;
 
     return 0;
 }
